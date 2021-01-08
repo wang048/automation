@@ -43,3 +43,34 @@ mypath = "I:\\CA\\HRD\\HR\\T&D\\02.訓練紀錄\\試用期訓練記錄\\*.*"
 last_file = max(glob.glob(mypath), key=os.path.getmtime)
 shutil.copy(last_file, "D:\\backups") #將檔案1.txt移動至資料夾a底下
 time.sleep(3)
+
+#找出新建的資料，日期會是最新的，就可以做移動和處理
+from datetime import datetime as dt
+ttt = str(dt.now().date())
+mypath1 = "D:\\backups\\*.*"
+last_file2 = max(glob.glob(mypath1), key=os.path.getmtime)
+last_file2
+mypath2 = "D:\\backups\\"
+mypath3 = mypath2 + "新進人員訓練記錄(試用期)" + ttt #移動到我們要資料夾後，再更換檔名
+os.rename(last_file2, mypath3)
+
+#將之前找出來的list做處理並存到excel，先轉成string
+import openpyxl 
+wb = openpyxl.load_workbook(r"I:\CA\HRD2\HR\T&D\新進人員訓練紀錄(試用期).xlsx")
+sheet = wb['Sheet1']
+
+d1= np.array(inner_join['報到日期'],dtype=str);d2= np.array(inner_join['工號'],dtype=str)
+d3= np.array(inner_join['姓名'],dtype=str)   ; d4= np.array(inner_join['英文名字'],dtype=str)
+d5= np.array(inner_join['廠區'],dtype=str)   ; d6= np.array(inner_join['群'],dtype=str)
+d7= np.array(inner_join['中心'],dtype=str)   ; d8= np.array(inner_join['處'],dtype=str)
+d9= np.array(inner_join['部門'],dtype=str)   ; d10= np.array(inner_join['課別'],dtype=str)
+d11= np.array(inner_join['組'],dtype=str)    ; d12= np.array(inner_join['班'],dtype=str)
+d13= np.array(inner_join['職類'],dtype=str)  ; d14= np.array(inner_join['體系'],dtype=str)
+d15= np.array(inner_join['職務'],dtype=str)  ; d16= np.array(inner_join['身份別'],dtype=str)
+
+e1 = list(d1) ; e2 = list(d2) ; e3 = list(d3)
+e4 = list(d4) ; e5 = list(d5) ; e6 = list(d6)
+e7 = list(d7) ; e8 = list(d8) ; e9 = list(d9)
+e10 = list(d10) ; e11 = list(d11) ; e12 = list(d12)
+e13 = list(d13) ; e14 = list(d14) ; e15 = list(d15) ; e16 = list(d16)
+
