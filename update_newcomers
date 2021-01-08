@@ -14,3 +14,13 @@ AA = pd.read_excel(r"I:\CA\HRD2\HR\T&D\新進人員訓練紀錄(試用期).xlsx"
 bb=aa[["報到日期","工號","姓名","英文名字","廠區","群","中心","處","部門","課別","組","班","職類","職務","體系","身份別"]] #抓Notes上面特定的欄位
 cc = bb.loc[( bb['身份別'] == '間接') | ( bb['身份別'] == '直接')] #篩選掉需要的人
 
+#使用for迴圈，一一比對重覆的資料並貼到變數裡
+for i in list5:
+    for j in list6:
+        if i == j:
+            list3.append(i)
+            
+#使用for迴圈，若是有不同的資料，貼到變數裡，就可以找到我們要存到excel的資料列list4
+for b in (list5):
+    if b not in list3: 
+        list4.append(b)
