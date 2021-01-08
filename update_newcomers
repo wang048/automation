@@ -1,1 +1,7 @@
 
+#導入需要的模組
+import xlrd, xlwt, requests, time, re
+import pandas as pd
+from bs4 import BeautifulSoup
+import numpy as np
+from pandas.core.frame import DataFrame
