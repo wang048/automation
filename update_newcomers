@@ -1,7 +1,16 @@
-
 #導入需要的模組
 import xlrd, xlwt, requests, time, re
 import pandas as pd
 from bs4 import BeautifulSoup
 import numpy as np
 from pandas.core.frame import DataFrame
+
+#抓Notes上面的新人報到資料
+url = "http://tpemisap01/APP/NewPerson.nsf/d2a8f8fa94656dfd4825794f000dd95f?OpenView"
+r = requests.get( url , auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013')) #輸入帳密
+soup = BeautifulSoup( r.text , 'lxml')
+aa = pd.read_html( str( soup.select('table')[2] ) )[0]
+AA = pd.read_excel(r"I:\CA\HRD2\HR\T&D\新進人員訓練紀錄(試用期).xlsx",sheet_name = "Sheet1")
+bb=aa[["報到日期","工號","姓名","英文名字","廠區","群","中心","處","部門","課別","組","班","職類","職務","體系","身份別"]] #抓Notes上面特定的欄位
+cc = bb.loc[( bb['身份別'] == '間接') | ( bb['身份別'] == '直接')] #篩選掉需要的人
+
