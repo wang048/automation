@@ -1,3 +1,69 @@
+#抓出自動產生的頁面網址
+import xlrd, xlwt, requests, pandas as pd
+from bs4 import BeautifulSoup
+import time, numpy as np, re
+from pandas.core.frame import DataFrame
+response = requests.get(
+    "http://tpemisap01/APP/NewPerson.nsf/7a6bd0c1b6e76dd44825794f001cb1c1?OpenView", auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013'))
+soup = BeautifulSoup(response.text, "html.parser")
+# print(soup.prettify())  #輸出排版後的HTML內容
+titles = soup.find_all("a", limit=3) #★★★★★★★★★★★★★
+storage = []
+for title in titles:
+    print(title.get("href"))
+    storage.append(title.get("href"))
+website1 = "http://tpemisap01" + str(storage[2])
+print(website1)
+response = requests.get(
+    website1, auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013'))
+soup = BeautifulSoup(response.text, "html.parser")
+titles1 = soup.find_all("a",limit =3) #★★★★★★★★★★★★★
+storage1 = []
+for title in titles1:
+    print(title.get("href"))
+    storage1.append(title.get("href"))
+website2 = "http://tpemisap01" + str(storage1[2])
+print(website2)
+response = requests.get(
+    website2, auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013'))
+soup = BeautifulSoup(response.text, "html.parser")
+titles1 = soup.find_all("a",limit =3) #★★★★★★★★★★★★★
+storage1 = []
+for title in titles1:
+    print(title.get("href"))
+    storage1.append(title.get("href"))
+website3 = "http://tpemisap01" + str(storage1[2])
+print(website3)
+response = requests.get(
+    website3, auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013'))
+soup = BeautifulSoup(response.text, "html.parser")
+titles1 = soup.find_all("a",limit =3) #★★★★★★★★★★★★★
+storage1 = []
+for title in titles1:
+    print(title.get("href"))
+    storage1.append(title.get("href"))
+website4 = "http://tpemisap01" + str(storage1[2])
+print(website4)
+response = requests.get(
+    website4, auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013'))
+soup = BeautifulSoup(response.text, "html.parser")
+titles1 = soup.find_all("a",limit =3) #★★★★★★★★★★★★★
+storage1 = []
+for title in titles1:
+    print(title.get("href"))
+    storage1.append(title.get("href"))
+website5 = "http://tpemisap01" + str(storage1[2])
+print(website5)
+##################################################################################
+#抓出的範本如下：
+#http://tpemisap01/APP/NewPerson.nsf/7a6bd0c1b6e76dd44825794f001cb1c1?OpenView&Start=1.1.2.22
+#http://tpemisap01/APP/NewPerson.nsf/7a6bd0c1b6e76dd44825794f001cb1c1?OpenView&Start=1.1.2.51
+#http://tpemisap01/APP/NewPerson.nsf/7a6bd0c1b6e76dd44825794f001cb1c1?OpenView&Start=1.1.2.80
+#http://tpemisap01/APP/NewPerson.nsf/7a6bd0c1b6e76dd44825794f001cb1c1?OpenView&Start=2.4.1.9
+#http://tpemisap01/APP/NewPerson.nsf/7a6bd0c1b6e76dd44825794f001cb1c1?OpenView&Start=3.2.1.11
+##################################################################################
+
+
 #導入需要的模組
 import xlrd, xlwt, requests, time, re
 import pandas as pd
