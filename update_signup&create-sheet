@@ -1,1 +1,123 @@
+#找出欲處理的網頁(該網頁會加密產生網址，需動態抓取)
+#http://tpemisap01/482579410027A537/C3A32AAB367EFC03482580A7002217B7/9EA15A0DA0D489E94825864D000802A5
+import xlrd, xlwt, requests, pandas as pd
+from bs4 import BeautifulSoup
+import time, numpy as np, re
+from pandas.core.frame import DataFrame
+response = requests.get(
+    "http://tpemisap01/APP/NewPerson.nsf/0b96dddddeb9d47f4825794f0015dfd2?OpenView&Start=1", auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013'))
+soup = BeautifulSoup(response.text, "html.parser")
+# print(soup.prettify())  #輸出排版後的HTML內容
+titles = soup.find_all("a", limit=3) #★★★★★★★★★★★★★
+storage = []
+for title in titles:
+    print(title.get("href"))
+    storage.append(title.get("href"))
+website1 = "http://tpemisap01" + str(storage[2])
+print(website1)
+response = requests.get(
+    website1, auth=requests.auth.HTTPBasicAuth('wesleyw','Uming013'))
+soup = BeautifulSoup(response.text, "html.parser")
+titles1 = soup.find_all("a",limit =3) #★★★★★★★★★★★★★
+storage1 = []
+for title in titles1:
+    print(title.get("href"))
+    storage1.append(title.get("href"))
+website2 = "http://tpemisap01" + str(storage1[2])
+print(website2)
 
+########################################
+#程式結果
+http://tpemisap01/APP/NewPerson.nsf/0b96dddddeb9d47f4825794f0015dfd2?OpenView&Start=3.1.1
+http://tpemisap01/APP/NewPerson.nsf/0b96dddddeb9d47f4825794f0015dfd2?OpenView&Start=4.7.2
+########################################
+
+#製作簽到表 - 華亞廠
+
+import openpyxl 
+wb = openpyxl.load_workbook(r"I:\CA\HRD\PDEV\T&D\08.Project\2020\T&D 共用\簽到表for報到用\簽到表(華亞廠).xlsx")
+sheet = wb['Sheet1']
+
+
+d1= np.array(cc5_p['工號'],dtype=str)
+d2= np.array(cc5_p['課別'],dtype=str)
+d3= np.array(cc5_p['姓名'],dtype=str)
+e1 = list(d1)
+e2 = list(d2)
+e3 = list(d3)
+# maxRow = sheet.max_row
+# x = maxRow + 1
+x = 8
+y = len(cc5_p["姓名"])
+z = 8 
+for i in range(8,30):
+    sheet['B'+str(z)] = ""
+    sheet['C'+str(z)] = ""
+    sheet['D'+str(z)] = ""
+    z = z+1
+for i in range(y):
+    sheet['B'+str(x)] = str(e1[i])
+    sheet['C'+str(x)] = str(e3[i])
+    sheet['D'+str(x)] = str(e2[i])
+    x += 1
+l = '%s'%(next_monday) + ' (一) 09:00~18:00'
+sheet["F6"] = l
+a = len(ee_p["廠區"])
+if a <= 3:  #★★★★★★★★★★★★★★★★★★★★(華亞廠) 改數字就可以加回上週的人數 (數字4表示上週人數不足5人，延到本週上課)
+    ddd1= np.array(ee_p['工號'],dtype=str)
+    ddd2= np.array(ee_p['部門'],dtype=str)
+    ddd3= np.array(ee_p['姓名'],dtype=str)
+    eee1 = list(ddd1)
+    eee2 = list(ddd2)
+    eee3 = list(ddd3)
+    x1 = 8 + y
+    y1 = len(ee_p["姓名"])
+    for l in range(y1):
+        sheet['B'+str(x1)] = str(eee1[l])
+        sheet['C'+str(x1)] = str(eee3[l])
+        sheet['D'+str(x1)] = str(eee2[l])
+        x1 += 1
+wb.save(r"I:\CA\HRD\PDEV\T&D\08.Project\2020\T&D 共用\簽到表for報到用\簽到表(華亞廠).xlsx")
+
+###################################################################################################################
+wb = openpyxl.load_workbook(r"I:\CA\HRD\PDEV\T&D\08.Project\2020\T&D 共用\簽到表for報到用\簽到表(龜山廠).xlsx")
+sheet = wb['Sheet1']
+d1= np.array(cc5_c['工號'],dtype=str)
+d2= np.array(cc5_c['課別'],dtype=str)
+d3= np.array(cc5_c['姓名'],dtype=str)
+e1 = list(d1)
+e2 = list(d2)
+e3 = list(d3)
+# maxRow = sheet.max_row
+# x = maxRow + 1
+x = 8
+y = len(cc5_c["姓名"])
+z = 8 
+for i in range(8,30):
+    sheet['B'+str(z)] = ""
+    sheet['C'+str(z)] = ""
+    sheet['D'+str(z)] = ""
+    z = z+1
+for i in range(y):
+    sheet['B'+str(x)] = str(e1[i])
+    sheet['C'+str(x)] = str(e3[i])
+    sheet['D'+str(x)] = str(e2[i])
+    x += 1
+l = '%s'%(next_monday) + ' (一) 09:00~18:00'
+sheet["F6"] = l
+b = len(ee_c["廠區"])
+if b <= 3:     #★★★★★★★★★★★★★★★★★★★★(龜山廠) 改數字就可以加回上週的人數
+    ddd1= np.array(ee_c['工號'],dtype=str)
+    ddd2= np.array(ee_c['部門'],dtype=str)
+    ddd3= np.array(ee_c['姓名'],dtype=str)
+    eee1 = list(ddd1)
+    eee2 = list(ddd2)
+    eee3 = list(ddd3)
+    x1 = 8 + y
+    y1 = len(ee_c["姓名"])
+    for l in range(y1):
+        sheet['B'+str(x1)] = str(eee1[l])
+        sheet['C'+str(x1)] = str(eee3[l])
+        sheet['D'+str(x1)] = str(eee2[l])
+        x1 += 1
+wb.save(r"I:\CA\HRD\PDEV\T&D\08.Project\2020\T&D 共用\簽到表for報到用\簽到表(龜山廠).xlsx")
