@@ -1,0 +1,194 @@
+#導入需要寄信的名單
+import pandas as pd
+import subprocess
+subprocess.Popen('explorer "I:\\CA\\HRD\\PDEV\\T&D\\02.訓練紀錄\\試用期訓練記錄"')
+reportaa = pd.read_excel(r"I:\CA\HRD\PDEV\T&D\02.訓練紀錄\試用期訓練記錄\新進人員訓練紀錄(試用期).xlsx",sheet_name = "報到")
+reportaa
+reportbb = reportaa[['工號','姓名','組別','班別','試用期間\n訓練紀錄','特定人員\n資料繳交','到職日','試用期\n考核日','主管','職類','考核通過\n確認','職稱','在/離職']]
+reportcc = reportbb.loc[( reportbb['試用期間\n訓練紀錄'] != '已繳交') & ( reportbb['特定人員\n資料繳交'] != '已繳交') & ( reportbb['職稱'] != '助理工程師') & ( reportbb['考核通過\n確認'] != '不合格') & ( reportbb['工號'] != '07010') & ( reportbb['在/離職'] == '1. 在職') & ( reportbb['職稱'] != '總機')]
+reportcc
+# import shutil, os
+# mypath3 = "I:\\CA\\HRD\\HR\\T&D\\●每日三大工作項目.xlsx"
+# shutil.copy(mypath3, "D:\\backups") #將檔案1.txt移動至資料夾a底下
+# from datetime import datetime as dt
+# ttt = str(dt.now().date())
+# mypath4 = mypath3 + "●每日三大工作項目" + ttt 
+# os.rename(last_file2, mypath3)
+
+#篩選&整理出需要寄信的資料
+import datetime
+now = datetime.datetime.now()
+
+
+df1 = reportcc['試用期\n考核日']
+df2 = reportcc[['工號','到職日','主管','職類','職稱']]
+from datetime import datetime
+from datetime import timedelta
+delta = timedelta(days=60)
+#pd.to_datetime 很好用的『智慧轉日期』
+df3 = df2[(now - pd.to_datetime(df2["到職日"])) > delta]['工號']
+df3
+inner_join = pd.merge(df3, reportcc, on="工號",how='inner')
+inner_join
+
+#★★★★★★★★★★★★★★★★★★★★★★★★★★★★★先改為英文字型★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+import pyautogui,time
+import pyperclip
+import subprocess
+# subprocess.Popen('explorer "D:\\backups\\一般人員"')
+pyautogui.FAILSAFE = True # enables the fail-safe   #滑鼠移到左上角  開啟自動防故障功能
+for index, row in inner_join.iterrows():
+#      print(row['主管'])
+    # 移到Notes
+    time.sleep(3)
+    pyautogui.hotkey('ctrl','m')
+    pyperclip.copy(row['主管'])  # 先复制
+    pyautogui.hotkey('ctrl', 'v')  # 再粘贴                       
+    pyautogui.press('tab')
+    time.sleep(0.5)
+    if row['職稱'] != '助理工程師':
+        pyautogui.typewrite(row['工號'])
+    time.sleep(0.5)
+    pyautogui.press('enter')    
+    pyautogui.press('enter')
+    pyautogui.typewrite('07862')
+    pyautogui.press('tab')    
+    time.sleep(0.5)
+    pyautogui.press('tab')
+    if row['職類'] == '一般人員' or row['職類'] == '研發人員':
+        pyperclip.copy('【新進人員試用期考核提醒】請您於考核日前一週回傳「新進人員試用期訓練計畫及檢核表」')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.press('tab')
+        pyautogui.press('tab')
+        pyautogui.press('tab')   
+        pyperclip.copy('Dear Sir,')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.press('enter')
+        pyautogui.press('enter')
+        pyperclip.copy('貴單位新進人員(名單如下)。煩請主管繳交「新進人員試用期訓練計畫及檢核表」。')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.press('enter')
+        pyperclip.copy('請主管協助於同仁試用期考核日前一週傳遞以下附件至 HR 窗口 張俊鴻 (#2013)，以利後續開假及查核作業，謝謝。')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        time.sleep(0.1) #回到(#2013)這邊
+        pyautogui.typewrite(['left','left','left','left','left','left','left','left','left','left','left','left','left','left','left','left'])
+        pyautogui.press('numlock')
+        time.sleep(0.1)
+        pyautogui.keyDown('shift') #開始選取範圍 至 HR窗口張俊鴻(#2013)
+        pyautogui.typewrite(['left','left','left','left','left','left','left','left','left','left','left','left','left','left','left','left','left'])
+        pyautogui.keyUp('shift')
+        time.sleep(0.1)
+        pyautogui.hotkey('ctrl','b')
+        time.sleep(0.1)
+        pyautogui.press('alt')
+        pyautogui.press('t')
+        pyautogui.press('c')
+        pyautogui.press('b')
+        time.sleep(0.1) #回到試用考核這邊
+        pyautogui.typewrite(['left','left','left','left','left','left','left','left'])
+        pyautogui.keyDown('shift')
+        time.sleep(0.1) #開始選取範圍 至 試用期考核日前一週
+        pyautogui.typewrite(['left','left','left','left','left','left','left','left','left'])
+        pyautogui.keyUp('shift')
+        time.sleep(0.1)
+        pyautogui.hotkey('ctrl','b')
+        time.sleep(0.1)
+        pyautogui.press('alt')
+        pyautogui.press('t')
+        pyautogui.press('c')
+        pyautogui.press('r')
+        time.sleep(0.1) #回到試用考核這邊
+        pyautogui.typewrite(['up','right','right','right','right','right','right','right','right','right','right','right'])
+        pyautogui.keyDown('shift') #開始選取範圍 至 「新進人員試用期訓練計畫及檢核表」
+        pyautogui.typewrite(['right','right','right','right','right','right','right','right','right','right','right','right','right','right','right','right','right'])
+        pyautogui.keyUp('shift')
+        pyautogui.typewrite(['f2','f2'])
+        pyautogui.hotkey('ctrl','b')
+        time.sleep(0.1)
+        pyautogui.press('alt')
+        pyautogui.press('t')
+        pyautogui.press('c')
+        pyautogui.press('b')
+        time.sleep(0.1)        
+        pyautogui.press('numlock')
+        pyautogui.typewrite(['end','down','end','enter','enter'])
+        pyperclip.copy('【應繳交文件】')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+#貼黏檔案
+        time.sleep(1.5)
+        subprocess.Popen('explorer "D:\\backups\\一般人員"')
+        time.sleep(2)
+        pyautogui.press('space')
+        time.sleep(0.5)
+        pyautogui.hotkey('ctrl','c')
+        pyautogui.moveTo(x=1418, y=9)
+        pyautogui.click((pyautogui.locateCenterOnScreen("D:\\backups\\Notes.png")))                   
+#         pyautogui.hotkey('alt','tab')
+        time.sleep(0.5)
+        pyautogui.hotkey('ctrl','v')
+        time.sleep(0.5)
+        pyautogui.press('enter')
+        pyautogui.press('enter')
+        pyperclip.copy('【轄下待考核人員】')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyperclip.copy(row['姓名'])  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyperclip.copy('  (試用考核到期日為：')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴  
+        pyautogui.typewrite(str(row['試用期\n考核日'])[0:10])
+        pyautogui.press(')')
+        pyautogui.press('enter')
+        pyautogui.press('enter')
+        pyperclip.copy('如有任何問題，煩請與HR-Hubert(#2013)聯繫，謝謝！')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.hotkey('ctrl','a')
+        pyautogui.hotkey('ctrl','k')
+        pyautogui.typewrite(['end','up','up','up','up','enter','esc','f2','f2','down','down','down','down','down','down','down','down','down','down','delete','delete'])      
+    else:
+        pyperclip.copy('【新進人員試用期考核提醒 - 特定人員資格認證】請您於考核日前一週回傳貴部門同仁認證及訓練文件')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.press('tab')
+        pyautogui.press('tab')
+        pyautogui.press('tab')   
+        pyperclip.copy('Dear Sir,')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.press('enter')
+        pyautogui.press('enter')
+        pyperclip.copy('貴單位新進同仁為「特定人員」；請主管協助於同仁試用期考核日前一週傳遞認證及訓練文件至 HR 窗口張俊鴻(#2013)，以備稽核抽查。')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.press('enter')
+        pyperclip.copy('※繳交訓練文件及完成新人訓練課程為開假的必要條件，請務必如期完成，謝謝。　')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
+        pyautogui.typewrite(['up', 'end','left','left','left','left','left','left','left','left'])
+        pyautogui.press('numlock')
+        pyautogui.keyDown('shift')
+        pyautogui.typewrite(['left','left','left','left','left','left','left','left','left','left','left','left','left','left','left'])
+        pyautogui.keyUp('shift')
+        pyautogui.hotkey('ctrl','b')
+        pyautogui.press('alt')
+        pyautogui.press('t')
+        pyautogui.press('c')
+        pyautogui.press('b')
+        pyautogui.typewrite(['left','left','left','left','left','left','left','left','left','left','left'])
+        pyautogui.keyDown('shift')
+        pyautogui.typewrite(['left','left','left','left','left','left','left','left','left','left','left'])
+        pyautogui.keyUp('shift')
+        pyautogui.hotkey('ctrl','b')
+        pyautogui.press('alt')
+        pyautogui.press('t')
+        pyautogui.press('c')
+        pyautogui.press('r')
+        pyautogui.typewrite(['left','left','left','left','left','left','left'])
+        pyautogui.keyDown('shift')
+        pyautogui.typewrite(['left','left','left','left','left','left'])
+        pyautogui.keyUp('shift')
+        pyautogui.typewrite(['f2','f2'])
+        pyautogui.hotkey('ctrl','b')
+        pyautogui.press('alt')
+        pyautogui.press('t')
+        pyautogui.press('c')
+        pyautogui.press('b')
+        pyautogui.press('numlock')
+        pyautogui.typewrite(['end','down','end','enter','enter'])
+        pyperclip.copy('【應繳交文件】')  # 先复制
+        pyautogui.hotkey('ctrl', 'v')  # 再粘贴
