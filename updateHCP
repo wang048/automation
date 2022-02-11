@@ -35,3 +35,94 @@ pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe2.PNG"))
 pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe2.PNG"))) #要點選兩次才會跑到輸入框
 time.sleep(2);pyperclip.copy('04648'); time.sleep(1); pyautogui.hotkey('ctrl', 'v'); pyautogui.press('tab')
 pyperclip.copy('Uming013'); pyautogui.hotkey('ctrl', 'v'); pyautogui.typewrite(['tab','tab','tab','space'])
+
+
+
+time.sleep(2)
+import pyautogui, pyperclip #下載第二份資料
+pyautogui.FAILSAFE = True # enables the fail-safe  #滑鼠移到左上角  開啟自動防故障功能
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self2.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self2.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self3.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self4.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self5.PNG")))
+pyautogui.typewrite(["enter"]) #最後一步無法用點選 因為游標會一直跑 所以改用enter
+
+try:
+    time.sleep(4) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Execute.PNG")))
+    
+except:
+    print("成功")
+
+time.sleep(5) 
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self7.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self8.PNG")))
+time.sleep(20)
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self9.PNG")))
+
+
+
+
+#完全版
+#自動登入 & 自動匯出
+#IE視窗需要全螢幕
+
+import webbrowser
+import pyautogui,time
+pyautogui.FAILSAFE = True # enables the fail-safe   #滑鼠移到左上角  開啟自動防故障功能
+ie = webbrowser.get('c:\\program files\\internet explorer\\iexplore.exe')
+ie.open('http://10.14.25.125:9001/forms/frmservlet?config=PROD')
+time.sleep(0.5) 
+pyautogui.click(34, 325) #滑鼠移到這  下一個視窗才會在這邊跳出來
+time.sleep(4) 
+
+try:
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Test.PNG"))) #第一次打開瀏覽器才需要
+    time.sleep(8) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Execute.PNG")))
+    
+except:
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Execute.PNG")))
+
+time.sleep(3)
+import pyperclip
+pyautogui.FAILSAFE = True # enables the fail-safe   #滑鼠移到左上角  開啟自動防故障功能
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe2.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe2.PNG"))) #要點選兩次才會跑到輸入框
+time.sleep(2);pyperclip.copy('04648'); time.sleep(1); pyautogui.hotkey('ctrl', 'v'); pyautogui.press('tab')
+pyperclip.copy('Uming013'); pyautogui.hotkey('ctrl', 'v'); pyautogui.typewrite(['tab','tab','tab','space'])
+
+time.sleep(2)
+import pyautogui, pyperclip #下載第二份資料
+pyautogui.FAILSAFE = True # enables the fail-safe  #滑鼠移到左上角  開啟自動防故障功能
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self2.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self2.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self3.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self4.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self5.PNG")))
+pyautogui.typewrite(["enter"]) #最後一步無法用點選 因為游標會一直跑 所以改用enter
+
+try:
+    time.sleep(4) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Execute.PNG")))
+    
+except:
+    print("成功")
+
+time.sleep(5) 
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self7.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self8.PNG")))
+time.sleep(20)
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self9.PNG")))
