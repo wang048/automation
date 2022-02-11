@@ -126,3 +126,106 @@ pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self7.PNG")))
 pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self8.PNG")))
 time.sleep(20)
 pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_self9.PNG")))
+
+
+
+#修改資料事項： 1 - 確認資料夾裡最新檔案是『匯出檔』  2 - 員工資料總檔修改時間不能早於HCP匯出的檔案
+
+#檔案解析&合併
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+import time
+import numpy as np
+import re
+from pandas.core.frame import DataFrame
+
+import os
+import shutil
+import glob
+
+from datetime import datetime as dt
+
+mypath1 = "I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\*.*"
+last_file2 = max(glob.glob(mypath1), key=os.path.getmtime)
+
+AA = pd.read_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx", encoding = "utf-16",sep="\t" )
+BB = pd.read_csv(last_file2, encoding = "utf-16-le",sep="\t" ).rename(columns={'第一階部門':'上階部門名稱'}) #修改欄位名稱，後面才可以合併
+DD = pd.read_excel(r"G:\●可刪●\部門BU中心處部課清冊_20200901.xlsx", encoding = "utf-16",sep="\t" )
+test = DD[["部門名稱","代碼","部門英文簡稱","組織層級","BU","中心","處","部","課","組","班","主管工號","主管姓名","主管管理層級"]]
+
+
+#增加資料 - 中心/BU/處/部/課
+inner_join = pd.merge(test,BB,on ="部門名稱",how ='outer') 
+inner_join
+
+#要分類要從這邊改！！！
+column_names = ["員工編號","員工分類","上階部門名稱","部門代號","部門名稱","班別名稱","代碼","部門英文簡稱","組織層級","BU","中心","處","部","課","組","班","主管工號","主管姓名","主管管理層級","員工姓名","英文姓名","職稱代號","在職狀態","到職日期","離職/留停日期","年資","生日","年齡","性別","職稱說明","直間接","人員類別","廠區名稱","最高學歷","科系","學校名稱","國籍名稱","行動電話","通訊地址","婚姻狀況","EMAIL","身份證號","第二階部門"]
+BB = BB.reindex(columns=column_names)
+inner_join = inner_join.reindex(columns=column_names)
+
+inner_join = inner_join.applymap(lambda e: str(e).replace("=","").replace('"',""))  #將特定字元取代掉
+inner_join[["主管工號"]].applymap(lambda x : str(x).zfill(5))  #補滿5個數字
+inner_join.to_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx",index=False)
+
+
+# #增加資料 - 分機表
+HH = pd.read_excel("G:\\★常用★\\全公司分機表.xlsx", encoding = "utf-16",sep="\t" )
+JJ = pd.read_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx", encoding = "utf-16",sep="\t" )
+inner_join2 = pd.merge(HH,JJ,on ="員工編號",how ='outer') 
+inner_join2.to_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx",index=False)
+
+
+KK = DD[['部門名稱','主管姓名']]
+inner_join3 = pd.merge(JJ,KK,left_on ="上階部門名稱",right_on = "部門名稱",how ='outer').rename(columns={'主管姓名_y':'上階主管姓名'}).rename(columns={'部門名稱_y':'上階部門名稱'}) #修改欄位名稱，後面才可以合併 #因為比對INDEX不同 所以要用LEFT ON
+inner_join3.to_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx",index=False)
+
+
+# BB.insert(loc=0, column="員工編號_暫時",value=BB['員工編號'])
+# BB.rename(columns={'員工編號_暫時':"員工編號"})
+# BB.drop(labels="Unnamed: 49",axis='columns').drop(labels="員工編號",axis='columns')
+# CC.rename(columns={'員工編號_暫時':"員工編號"}).drop(labels="員工編號",axis='columns')
+
+
+
+###確認是否為『特定人員』
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+import time, re
+import numpy as np
+from pandas.core.frame import DataFrame
+import os, shutil, glob
+from datetime import datetime as dt
+
+special77 = pd.read_excel(r"I:\CA\HRD\PDEV\T&D\05.特定&專責人員\特定人員\特定人員\●特定人員(最新)\●特定人員部門代碼_20210302.xls")
+special77[["部門名稱_x","備註(vlook用)"]]
+path = pd.read_excel(r"I:\CA\HRD\PDEV\T&D\08.Project\2020\T&D 共用\人事資料for訓練用\員工資料總檔.xlsx")
+path1 = special77[["部門名稱_x","備註(vlook用)"]]
+
+inner_join_special = pd.merge(path, path1, on ="部門名稱_x", how ='outer')
+inner_join_special.to_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx",index=False)
+
+#先把空值補滿
+special88 = pd.read_excel(r"I:\CA\HRD\PDEV\T&D\08.Project\2020\T&D 共用\人事資料for訓練用\員工資料總檔.xlsx")
+special88["備註(vlook用)"].fillna(value = "一般人員", inplace = True) #inplace：是否原地替换。如果为True，则在原DataFrame上进行操作。
+special88.to_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx",index=False)
+
+#再把直接人員改為一般人員
+special88.loc[(special88['直間接']=='1. 直接人員'),"備註(vlook用)"] = "一般人員"
+special88.to_excel("I:\\CA\\HRD\\PDEV\\T&D\\08.Project\\2020\\T&D 共用\\人事資料for訓練用\\員工資料總檔.xlsx",index=False)
+
+#之後讓Excel 自己去 vlookup類別為何
+
+
+
+#參考資料 & 未用到之程式
+
+# ★★★重要語法
+# CC = BB.applymap(lambda e: str(e).replace("=","").replace('"',""))
+# DD = AA.applymap(lambda e: str(e).replace("=","").replace('"',""))
+# ★★★重要
+
+#用來看螢幕位置在哪
+# import pyautogui
+# pyautogui.position()
