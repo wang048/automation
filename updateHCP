@@ -1,1 +1,37 @@
+#自動登入用
 
+import webbrowser
+import pyautogui,time
+pyautogui.FAILSAFE = True # enables the fail-safe   #滑鼠移到左上角  開啟自動防故障功能
+ie = webbrowser.get('c:\\program files\\internet explorer\\iexplore.exe')
+ie.open('http://10.14.25.125:9001/forms/frmservlet?config=PROD')
+time.sleep(0.5) 
+pyautogui.click(34, 325) #滑鼠移到這  下一個視窗才會在這邊跳出來
+time.sleep(4) 
+
+try:
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Test.PNG"))) #第一次打開瀏覽器才需要
+    time.sleep(8) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Execute.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_VERSION.PNG")))
+    
+except:
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_Execute.PNG")))
+    time.sleep(1) 
+    pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_VERSION.PNG")))
+
+    
+
+time.sleep(5)
+import pyperclip
+pyautogui.FAILSAFE = True # enables the fail-safe   #滑鼠移到左上角  開啟自動防故障功能
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe2.PNG")))
+pyautogui.click((pyautogui.locateCenterOnScreen(r"D:\backups\HCP_ClickMe2.PNG"))) #要點選兩次才會跑到輸入框
+time.sleep(2);pyperclip.copy('04648'); time.sleep(1); pyautogui.hotkey('ctrl', 'v'); pyautogui.press('tab')
+pyperclip.copy('Uming013'); pyautogui.hotkey('ctrl', 'v'); pyautogui.typewrite(['tab','tab','tab','space'])
