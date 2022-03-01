@@ -1,1 +1,67 @@
+#導入相關模組
+from bs4 import BeautifulSoup as bs
+import pandas as pd
+import numpy as np
+import requests,re
+from lxml import html
 
+#★★★輸入個人帳號密碼★★★
+account = '*****'
+password = '*****'
+
+#前置作業 - 變數設定
+LOGIN_URL = 'http://tpehrmap07.winfoundry.com:8080/Account/Login?appGuid=bf02fb15-bbc5-42be-b0e6-952f912aebec' #登入頁面處理
+URL = 'http://tpehrmap07.winfoundry.com/RWD/System/Picker/ConditionPicker.aspx'  #蒐尋頁面處理
+session_requests = requests.session()
+
+#導入網頁原始碼&轉為txt文字
+result = session_requests.get(LOGIN_URL)
+tree = html.fromstring(result.text)
+
+#抓系統的Token - 第一組
+authenticity_token = list(set(tree.xpath('//input[@name="__RequestVerificationToken"]/@value')))[0]
+#抓系統的Token - 第二組
+getcookietoken=re.findall(r"Cookie __RequestVerificationToken=(.*?) for",str(result.cookies))
+cookietoken=getcookietoken[0]
+
+#網頁處理 - 預先帶入資料，讓網站以為是真實使用者
+headers = {
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.62',
+    'Cookie': 'originalWindowMode=Pc_Mode; WindowMode=Pc_Mode; __RequestVerificationToken=' +cookietoken+ '; ASP.NET_SessionId=gqiemcaodm0sexk040ailox4; __session:0.9646228576613485:OrcaReferrersID=System-018; __session:0.9646228576613485:HomeTabs4257=manager; __session:0.48071318291335285:OrcaReferrersID=System-018; __session:0.48071318291335285:HomeTabs4257=manager'
+}
+
+payload = {
+    '__RequestVerificationToken': authenticity_token,
+    'APP_GUID': 'bf02fb15-bbc5-42be-b0e6-952f912aebec',
+    'ACCOUNT': account,
+    'PASSWORD': password
+}
+
+#★★★查訊資料更改位置★★★
+dataQuery = {
+    'id': 'GetData',
+    'rowStart': '0',
+    'rowEnd': '2000',
+    'data': '[{"part":"1","list":[{"partType":"Org","partValue":"515110,515120,515130,515100,461000,461011,461012,517211-1,517211-2,517211-3,517212-1,517212-2,517212-3,517211,517212,517213-1,517213-2,517213-3,517214-1,517214-2,517214-3,517213,517214,516101,516102,516211-1,516211-2,516211-3,516212-1,516212-2,516212-3,516211,516212,516213-1,516213-2,516213-3,516214-1,516214-2,516214-3,516213,516214,516201,516202,461010,516100,516200","partText":"單位:安衛一課,安衛二課,安衛三課,安衛部,廠務處,路竹水氣化籌備課,路竹電力空調籌備課,電力組(A),電力組(B),電力組(C),消防營繕組(A),消防營繕組(B),消防營繕組(C),電力組,消防營繕組,一般空調組(A),一般空調組(B),一般空調組(C),無塵室空調組(A),無塵室空調組(B),無塵室空調組(C),一般空調組,無塵室空調組,電力課,空調課,純水組(A),純水組(B),純水組(C),廢水組(A),廢水組(B),廢水組(C),純水組,廢水組,氣體組(A),氣體組(B),氣體組(C),化學組(A),化學組(B),化學組(C),氣體組,化學組,水處理課,氣化課,路竹廠務籌備部,電力空調部,水氣化部"},{"partType":"Job","partValue":"010,009,008","partText":"職稱:高級工程師,資深工程師,工程師"}]}]'
+}
+
+#開始處理頁面資料
+result = session_requests.post(LOGIN_URL, data = payload, headers = headers) #登入頁面
+result = session_requests.get(URL, headers = dict(referer = URL), data = dataQuery) #蒐尋頁面
+result1 = result.text #導出資料為txt格式
+
+#將導出的資料由Json檔案轉為好讀格式
+import json
+jsonData=session_requests.get(URL,headers = dict(referer = URL), data = dataQuery)
+data=json.loads(jsonData.text)
+
+#將Json格式(字典)逐一導出
+outputs = data['rows']
+for output in outputs:
+    jobjob=[]
+    jobjob.append(output['UserID'])
+    jobjob.append(output['UserName'])
+    jobjob.append(output['OuName'])
+    jobjob.append(output['JobTitle'])
+    print(jobjob)
