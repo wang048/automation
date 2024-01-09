@@ -1,0 +1,64 @@
+Sub 合併所有表格到第一個檔案()
+    Dim MyPath As String
+    Dim MyFile As String
+    Dim MasterWb As Workbook
+    Dim SourceWb As Workbook
+    Dim SourceWs As Worksheet
+    Dim DestWs As Worksheet
+    Dim SheetName As String
+
+    ' 指定資料夾路徑★★
+    MyPath = "C:\Users\wesley_wang\Desktop\excel檔案拆"
+
+    ' 設置第一個檔案為主檔★★
+    Set MasterWb = Workbooks.Open(Filename:=MyPath & "\" & "合併主檔.xlsx")
+
+    ' 獲取資料夾中的第一個Excel檔案名稱
+    MyFile = Dir(MyPath & "\*.xlsx")
+
+    Do While MyFile <> ""
+        ' 避免重複開啟主工作簿
+        If MyPath & "\" & MyFile <> MasterWb.FullName Then
+            ' 打開源工作簿
+            Set SourceWb = Workbooks.Open(Filename:=MyPath & "\" & MyFile)
+            Set SourceWs = SourceWb.Sheets(1)
+            
+            ' 使用檔案名稱作為新工作表的名稱
+            SheetName = Replace(MyFile, ".xlsx", "") ' 去掉.xlsx
+            ' 替換不合法的字符
+            SheetName = Replace(SheetName, "\", "")
+            SheetName = Replace(SheetName, "/", "")
+            SheetName = Replace(SheetName, ":", "")
+            SheetName = Replace(SheetName, "*", "")
+            SheetName = Replace(SheetName, "?", "")
+            SheetName = Replace(SheetName, "[", "")
+            SheetName = Replace(SheetName, "]", "")
+            
+            ' 檢查名稱衝突
+            Dim counter As Integer
+            counter = 1
+            Dim originalName As String
+            originalName = SheetName
+            Do While Evaluate("ISREF('" & SheetName & "'!A1)")
+                SheetName = originalName & "_" & counter
+                counter = counter + 1
+            Loop
+            
+            ' 將源工作表拷貝到主工作簿並重新命名
+            SourceWs.Copy After:=MasterWb.Sheets(MasterWb.Sheets.Count)
+            MasterWb.Sheets(MasterWb.Sheets.Count).Name = SheetName
+
+            ' 關閉源工作簿，不保存更改
+            SourceWb.Close SaveChanges:=False
+        End If
+
+        ' 獲取下一個檔案名稱
+        MyFile = Dir
+    Loop
+
+    ' 提示用戶合併完成
+    MsgBox "所有工作表已合併完畢", vbInformation
+
+End Sub
+
+
